@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="header :: copy"></head>
+
+<body>
+<h1>User Search</h1>
+
+<p>Enter an user number or search for a user surname/name:</p>
+
+<form action="#" th:object="${searchCriteria}" method="GET"
+      th:action="@{/users/dosearch}" class="form-horizontal">
+
+    <!-- User Number field -->
+    <div class="form-group">
+        <label for="number" class="control-label col-xs-2">User
+            Number</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="number"
+                   th:field="*{userNumber}" placeholder="Enter user number"
+                   style="width: 10em;"/>
+        </div>
+        <div class="col-xs-8">Enter a valid digit number</div>
+    </div>
+
+    <!-- User Number errors (if any) -->
+    <div class="form-group">
+        <div class="control-label col-xs-2">&nbsp;</div>
+        <div class="col-xs-2">&nbsp;</div>
+        <div class="col-xs-8">
+				<span th:if="${#fields.hasErrors('userNumber')}"
+                      style="color: red; font-size: smaller" th:errors="*{userNumber}">Incorrect
+					data</span>
+        </div>
+    </div>
+
+    <!-- Name field -->
+    <div class="form-group">
+        <label for="searchName" class="control-label col-xs-2">Name</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="searchName"
+                   th:field="*{name}" placeholder="Name"
+                   style="width: 10em;"/>
+        </div>
+        <div class="col-xs-2">
+            <div class="col-xs-8">Case-insensitive, supports part name
+                matching
+            </div>
+        </div>
+    </div>
+
+    <!-- Name errors (if any) -->
+    <div class="form-group">
+        <div class="control-label col-xs-2">&nbsp;</div>
+        <div class="col-xs-2">&nbsp;</div>
+        <div class="col-xs-8">
+				<span th:if="${#fields.hasErrors('name')}"
+                      style="color: red; font-size: smaller" th:errors="*{name}"></span>
+        </div>
+    </div>
+
+    <!-- Surname field -->
+    <div class="form-group">
+        <label for="searchSurname" class="control-label col-xs-2">Surname</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="searchSurname"
+                   th:field="*{surname}" placeholder="Surname"
+                   style="width: 10em;"/>
+        </div>
+        <div class="col-xs-2">
+            <div class="col-xs-8">Case-insensitive, supports part name
+                matching
+            </div>
+        </div>
+    </div>
+    <!-- Surname errors (if any) -->
+    <div class="form-group">
+        <div class="control-label col-xs-2">&nbsp;</div>
+        <div class="col-xs-2">&nbsp;</div>
+        <div class="col-xs-8">
+				<span th:if="${#fields.hasErrors('surname')}"
+                      style="color: red; font-size: smaller" th:errors="*{surname}"></span>
+        </div>
+    </div>
+
+    <!--  Submit button -->
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">Find</button>
+        </div>
+    </div>
+</form>
+
+<div th:replace="footer :: copy"></div>
+
+</body>
+</html>

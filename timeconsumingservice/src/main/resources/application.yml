@@ -1,0 +1,38 @@
+# Spring properties
+spring:
+  # Ignore Eureka dashboard FreeMarker templates
+  freemarker:
+      enabled: false
+  # Allow Thymeleaf templates to be reloaded at runtime
+  thymeleaf:
+       cache: false
+  # Trailing / mandatory
+  # Template location for this application only
+       prefix: classpath:/templates/
+
+
+# Map the error path to error template (for Thymeleaf)
+error:
+  path: /error
+
+# HTTP Server
+# HTTP (Tomcat) port
+server:
+  port: ${SERVICE_PORT:@service.port@}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  ${DEFAULT_ZONE:http://@rs.ip@:@rs.port@}/eureka/
+  instance:
+    preferIpAddress: true
+    # DO NOT DO THIS IN PRODUCTION
+    leaseRenewalIntervalInSeconds: 5
+
+# Disabling security for Actuator' REST services
+security:
+  basic:
+    enabled: false
+management:
+  security:
+    enabled: false

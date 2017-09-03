@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>container-microservice</artifactId>
+        <groupId>net.microservices.tutorial</groupId>
+        <version>0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>persistenceservice</artifactId>
+
+    <properties>
+        <start-class>net.microservices.tutorial.persistenceservice.PersistenceServer</start-class>
+        <finalName>registrationservice-${project.version}</finalName>
+        <service.port>2222</service.port>
+        <container.ip>localhost</container.ip>
+        <rs.port>1111</rs.port>
+        <rs.ip>localhost</rs.ip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>servicecommon</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${finalName}</finalName>
+    </build>
+
+</project>

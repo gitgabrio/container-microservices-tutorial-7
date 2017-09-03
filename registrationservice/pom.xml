@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>registrationservice</artifactId>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>net.microservices.tutorial</groupId>
+        <artifactId>container-microservice</artifactId>
+        <version>0.1</version>
+        <relativePath>../</relativePath>
+    </parent>
+    <properties>
+        <start-class>net.microservices.tutorial.registrationservice.RegistrationServer</start-class>
+        <finalName>registrationservice-${project.version}</finalName>
+        <service.port>1111</service.port>
+        <container.ip>localhost</container.ip>
+    </properties>
+    <build>
+        <finalName>${finalName}</finalName>
+    </build>
+</project>

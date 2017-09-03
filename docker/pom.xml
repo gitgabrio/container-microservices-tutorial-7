@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>container-microservice</artifactId>
+        <groupId>net.microservices.tutorial</groupId>
+        <version>0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>docker</artifactId>
+    <packaging>pom</packaging>
+    <properties>
+        <!-- PLUGINS -->
+        <docker.maven.plugin.fabric8.version>0.21.0</docker.maven.plugin.fabric8.version>
+        <!-- CONFIGURATIONS -->
+        <docker.repo>(YOUR-REPO-NAME)</docker.repo>
+        <!-- services properties -->
+        <registration.service.port>1111</registration.service.port>
+        <persistence.service.port>2222</persistence.service.port>
+        <timeconsuming.service.port>3333</timeconsuming.service.port>
+        <configuration.service.port>4444</configuration.service.port>
+        <actorserver.service.port>5555</actorserver.service.port>
+        <actorclient.service.port>6666</actorclient.service.port>
+        <akkacluster.service.port>7777</akkacluster.service.port>
+        <!-- Images to build and run - default to all-->
+        <images>registrationservice, persistenceservice, timeconsumingservice, configurationservice,
+            actorserverservice, actorclientservice, akkaclusterservice
+        </images>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>configuration</id>
+            <properties>
+                <images>registrationservice, persistenceservice, timeconsumingservice, configurationservice
+                </images>
+            </properties>
+        </profile>
+        <profile>
+            <id>akka</id>
+            <properties>
+                <images>registrationservice, akkaclusterservice, actorclientservice, actorserverservice
+                </images>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>registrationservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>persistenceservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>timeconsumingservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>configurationservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>actorserverservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>actorclientservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>akkaclusterservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- DOCKERIZE WITH FABRIC8 -->
+            <plugin>
+                <!-- The Docker Maven plugin is used to create docker image with the fat jar -->
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.maven.plugin.fabric8.version}</version>
+                <configuration>
+                    <logDate>default</logDate>
+                    <autoPull>true</autoPull>
+                    <filter>${images}</filter>
+                    <images>
+                        <!-- Registration service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>registrationservice</alias>
+                            <name>${docker.repo}/registration-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../registrationservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${registration.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/registrationservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${registration.service.port}:${registration.service.port}</port>
+                                </ports>
+                                <env>
+                                    <SERVICE_PORT>${registration.service.port}</SERVICE_PORT>
+                                    <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
+                                </env>
+                                <wait>
+                                    <!-- Check for this URL to return a 200 return code .... -->
+                                    <url>http://${docker.host.address}:${registration.service.port}</url>
+                                    <!-- ... but at max 90 seconds -->
+                                    <time>90000</time>
+                                </wait>
+                                <log>
+                                    <prefix>REG_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Persistence service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>persistenceservice</alias>
+                            <name>${docker.repo}/persistence-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../persistenceservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${persistence.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/persistenceservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${persistence.service.port}:${persistence.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${persistence.service.port}</SERVICE_PORT>
+                                </env>
+                                <!--<wait>-->
+                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${persistence.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>PER_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Timeconsuming service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>timeconsumingservice</alias>
+                            <name>${docker.repo}/timeconsuming-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../timeconsumingservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${timeconsuming.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/timeconsumingservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${timeconsuming.service.port}:${timeconsuming.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${timeconsuming.service.port}</SERVICE_PORT>
+                                </env>
+                                <!--<wait>-->
+                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${timeconsuming.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>TIM_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Configuration service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>configurationservice</alias>
+                            <name>${docker.repo}/configuration-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../configurationservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${configuration.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/configurationservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${configuration.service.port}:${configuration.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${configuration.service.port}</SERVICE_PORT>
+                                </env>
+                                <!--<wait>-->
+                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${timeconsuming.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                    <container>
+                                        persistenceservice
+                                    </container>
+                                    <container>
+                                        timeconsumingservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX, PS_XXX variables, TS_XXX variables -->
+                                    <link>registrationservice:rs, persistenceservice:ps, timeconsumingservice:ts</link>
+                                </links>
+                                <log>
+                                    <prefix>CON_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Akka cluster service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>akkaclusterservice</alias>
+                            <name>${docker.repo}/akkacluster-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../akkaclusterservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${akkacluster.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/akkaclusterservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${akkacluster.service.port}:${akkacluster.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${akkacluster.service.port}</SERVICE_PORT>
+                                    <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
+                                </env>
+                                <wait>
+                                    <!-- Check for this URL to return a 200 return code .... -->
+                                    <url>http://${docker.host.address}:${akkacluster.service.port}</url>
+                                    <!-- ... but at max 90 seconds -->
+                                    <time>90000</time>
+                                </wait>
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>AKK_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Actor client service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>actorclientservice</alias>
+                            <name>${docker.repo}/actorclient-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../actorclientservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${actorclient.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/actorclientservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${actorclient.service.port}:${actorclient.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${actorclient.service.port}</SERVICE_PORT>
+                                    <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
+                                </env>
+                                <!--<wait>-->
+                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${actorclient.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 90 seconds &ndash;&gt;-->
+                                <!--<time>90000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        akkaclusterservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>AKC_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Actor server service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>actorserverservice</alias>
+                            <name>${docker.repo}/actorserver-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>java:8u40</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../actorserverservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${actorserver.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/actorserverservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${actorserver.service.port}:${actorserver.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${actorserver.service.port}</SERVICE_PORT>
+                                    <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
+                                </env>
+                                <!--<wait>-->
+                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                    <!--<url>http://${docker.host.address}:${actorserver.service.port}</url>-->
+                                    <!--&lt;!&ndash; ... but at max 90 seconds &ndash;&gt;-->
+                                    <!--<time>90000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        akkaclusterservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>AKS_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <!-- Hooking into the lifecycle -->
+                <executions>
+                    <execution>
+                        <id>docker-build</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.5.2.RELEASE</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

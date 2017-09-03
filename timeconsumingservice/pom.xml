@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>container-microservice</artifactId>
+        <groupId>net.microservices.tutorial</groupId>
+        <version>0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>timeconsumingservice</artifactId>
+
+    <properties>
+        <start-class>net.microservices.tutorial.timeconsumingservice.TimeConsumingServer</start-class>
+        <finalName>timeconsumingservice-${project.version}</finalName>
+        <service.port>3333</service.port>
+        <container.ip>localhost</container.ip>
+        <rs.port>1111</rs.port>
+        <rs.ip>localhost</rs.ip>
+    </properties>
+    <build>
+        <finalName>${finalName}</finalName>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>servicecommon</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
+</project>

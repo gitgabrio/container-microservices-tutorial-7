@@ -1,0 +1,45 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="header :: copy"></head>
+
+<body>
+	<h1>User Add</h1>
+
+	<p>Enter user data</p>
+
+	<form action="#" th:object="${newUser}" method="POST"
+		th:action="@{/users/doadd}" class="form-horizontal">
+
+		<!-- Name field -->
+		<div class="form-group">
+			<label for="name" class="control-label col-xs-2">Name</label>
+			<div class="col-xs-2">
+				<input type="text" class="form-control" id="name"
+					th:field="${newUser.name}" placeholder="Enter user name"
+					style="width: 10em;" />
+			</div>
+		</div>
+		<!-- Surname field -->
+		<div class="form-group">
+			<label for="surname" class="control-label col-xs-2">Surname</label>
+			<div class="col-xs-2">
+				<input type="text" class="form-control" id="surname"
+					   th:field="${newUser.surname}" placeholder="Enter user surname"
+					   style="width: 10em;" />
+			</div>
+		</div>
+
+		<!--  Submit button -->
+		<div class="form-group">
+			<div class="col-xs-offset-2 col-xs-10">
+				<button type="submit" class="btn btn-primary">Save</button>
+			</div>
+		</div>
+	</form>
+
+	<div th:replace="footer :: copy"></div>
+
+</body>
+</html>

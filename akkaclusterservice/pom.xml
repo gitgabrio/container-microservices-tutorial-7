@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>net.microservices.tutorial</groupId>
+        <artifactId>container-microservice</artifactId>
+        <version>0.1</version>
+        <relativePath>../</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>akkaclusterservice</artifactId>
+    <properties>
+        <akka.version>2.5.3</akka.version>
+        <!-- CONFIGURATIONS -->
+        <start-class>net.microservices.tutorial.akkaclusterservice.AkkaClusterServer</start-class>
+        <finalName>akkaclusterservice-${project.version}</finalName>
+        <service.port>7777</service.port>
+        <rs.port>1111</rs.port>
+        <rs.ip>localhost</rs.ip>
+        <akka.port>12550</akka.port>
+        <seed.port1>22552</seed.port1>
+        <seed.port2>22553</seed.port2>
+    </properties>
+    <build>
+        <finalName>${finalName}</finalName>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>servicecommon</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.11</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-remote_2.11</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster_2.11</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster-metrics_2.11</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+    </dependencies>
+</project>

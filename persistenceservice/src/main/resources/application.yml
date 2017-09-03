@@ -1,0 +1,58 @@
+# Spring properties
+spring:
+  # Ignore Eureka dashboard FreeMarker templates
+  freemarker:
+      enabled: false
+  # Allow Thymeleaf templates to be reloaded at runtime
+  thymeleaf:
+       cache: false
+  # Trailing / mandatory
+  # Template location for this application only
+       prefix: classpath:/templates/
+
+  # Database configuration
+  # Spring Boot automatically creates a JPA EntityManagerFactory using Hibernate
+  # but we need to override some defaults:
+  #
+  #   1. Stop Hibernate automatically creating a schema, we are doing it in
+  #      schema.sql. Instead check the tables match their JPA mapped classes
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    database: HSQL
+    show-sql: true
+
+# Map the error path to error template (for Thymeleaf)
+error:
+  path: /error
+
+# HTTP Server
+# HTTP (Tomcat) port
+server:
+  port: ${SERVICE_PORT:@service.port@}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  ${DEFAULT_ZONE:http://@rs.ip@:@rs.port@}/eureka/
+  instance:
+    preferIpAddress: true
+    # DO NOT DO THIS IN PRODUCTION
+    leaseRenewalIntervalInSeconds: 5
+
+
+#Test db
+testDatasource:
+  url: jdbc:hsqldb:file:testdb
+  username: SA
+  password:
+  driverClassName: org.hsqldb.jdbcDriver
+
+# Disabling security for Actuator' REST services
+security:
+  basic:
+    enabled: false
+management:
+  security:
+    enabled: false

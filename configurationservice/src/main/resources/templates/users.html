@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="header :: copy"></head>
+
+<body>
+	<h1>Users</h1>
+	<div th:if="not ${users}" class="error">
+		No users found containing '<span th:text="${search}">text</span>'.
+		<div style="height: 2cm">&nbsp;</div>
+	</div>
+
+	<div th:if="${users}">
+		<p>
+			Users found:
+		</p>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Surname</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="user : ${users}">
+					<td><a href="user.html"
+						th:href="@{|/users/${user.id}|}"
+						th:text="|${user.id}|">?</a></td>
+					<td th:text="${user.name}">?</td>
+					<td th:text="${user.surname}">?</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div style="text-align: right">
+		Options: <a th:href="@{/}">Home</a> | <a
+			th:href="@{/users/search}">User Search</a>
+	</div>
+
+	<div th:replace="footer :: copy"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="header :: copy"></head>
+
+<body>
+
+<h1>Microservices Demo - Akka Cluster Service</h1>
+
+<h2>Metrics</h2>
+<ul>
+    <li>Heap Used <p th:text="${heapMemory}"></p></li>
+    <li>Processors <p th:text="${processors}"></p></li>
+    <li>Average Load <p th:text="${loadAverage}"></p></li>
+</ul>
+
+<h2>Nodes</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Member</th>
+        <th>Roles</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="node : ${nodes}">
+        <td th:text="${node.key}">?</td>
+        <td th:text="${node.value.roles}">?</td>
+        <td th:text="${node.value.status}">?</td>
+    </tr>
+    </tbody>
+</table>
+
+
+<h3>Spring Boot URLs</h3>
+<p>For those interested, Spring Boot provides RESTful URLs for
+    interrogating your application (they return JSON format data):</p>
+
+<ul>
+    <li><a th:href="@{/beans}">The beans</a></li>
+    <li><a th:href="@{/env}">The environment</a></li>
+    <li><a th:href="@{/dump}">Thread dump</a></li>
+    <li><a th:href="@{/health}">Application health</a></li>
+    <li><a th:href="@{/info}">Application information</a></li>
+    <li><a th:href="@{/metrics}">Application metrics</a></li>
+    <li><a th:href="@{/trace}">Request call trace</a></li>
+</ul>
+
+<div th:replace="footer :: copy"></div>
+
+</body>
+</html>

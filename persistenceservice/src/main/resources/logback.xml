@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+</configuration>
+<!-- configuration file for LogBack (slf4J implementation)
+See here for more details: http://gordondickens.com/wordpress/2013/03/27/sawing-through-the-java-loggers/ -->
+<!--<configuration scan="true" scanPeriod="30 seconds">-->
+
+    <!---->
+
+    <!--<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">-->
+        <!--<resetJUL>true</resetJUL>-->
+    <!--</contextListener>-->
+
+    <!--&lt;!&ndash; To enable JMX Management &ndash;&gt;-->
+    <!--<jmxConfigurator/>-->
+
+    <!--<appender name="console" class="ch.qos.logback.core.ConsoleAppender">-->
+        <!--<encoder>-->
+            <!--<pattern>${PID}: %-5level %logger{0} - %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
+    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<file>/var/log/persistenceservice.log</file>-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--&lt;!&ndash; daily rollover. Make sure the path matches the one in the file element or else-->
+             <!--the rollover logs are placed in the working directory. &ndash;&gt;-->
+            <!--<fileNamePattern>/var/log/persistenceservice_%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+
+            <!--<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+                <!--<maxFileSize>5MB</maxFileSize>-->
+            <!--</timeBasedFileNamingAndTriggeringPolicy>-->
+            <!--&lt;!&ndash; keep 30 days' worth of history &ndash;&gt;-->
+            <!--<maxHistory>30</maxHistory>-->
+        <!--</rollingPolicy>-->
+        <!--<encoder>-->
+            <!--<charset>UTF-8</charset>-->
+            <!--<pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
+    <!--&lt;!&ndash; Specify logging levels &ndash;&gt;-->
+    <!--<logger name="org.springframework" level="warn"/>-->
+ 	<!--<logger name="org.hibernate" level="warn"/>-->
+         <!---->
+    <!--<root level="info">-->
+        <!--<appender-ref ref="console"/>-->
+        <!--<appender-ref ref="FILE"/>-->
+    <!--</root>-->
+<!--</configuration>-->
