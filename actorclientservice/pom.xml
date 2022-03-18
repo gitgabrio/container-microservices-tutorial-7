@@ -11,7 +11,7 @@
 
     <artifactId>actorclientservice</artifactId>
     <properties>
-        <akka.version>2.5.3</akka.version>
+        <akka.version>2.5.16</akka.version>
         <!-- CONFIGURATIONS -->
         <start-class>net.microservices.tutorial.actorclientservice.ActorClientServer</start-class>
         <finalName>actorclientservice-${project.version}</finalName>
