@@ -12,7 +12,7 @@
 
     <artifactId>akkaclusterservice</artifactId>
     <properties>
-        <akka.version>2.5.3</akka.version>
+        <akka.version>2.5.16</akka.version>
         <!-- CONFIGURATIONS -->
         <start-class>net.microservices.tutorial.akkaclusterservice.AkkaClusterServer</start-class>
         <finalName>akkaclusterservice-${project.version}</finalName>
